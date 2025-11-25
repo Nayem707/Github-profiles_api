@@ -39,7 +39,9 @@ const RepoList: React.FC<RepoListProps> = ({
 
   if (!repositories.length) {
     return (
-      <div className={`text-center py-12 ${className}`}>
+      <div
+        className={`text-center py-12 border-2 border-dashed border-gray-300 rounded-lg ${className}`}
+      >
         <div className='text-gray-400 mb-4'>
           <svg
             className='w-16 h-16 mx-auto mb-4'

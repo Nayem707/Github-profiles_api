@@ -150,7 +150,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
   if (!activities.length) {
     return (
       <div
-        className={`bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-center ${className}`}
+        className={`bg-white rounded-xl shadow border border-gray-200 p-6 text-center ${className}`}
       >
         <h2 className='text-xl font-bold text-gray-900 mb-2'>
           Recent Activity
@@ -162,7 +162,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-lg border border-gray-200 p-6 ${className}`}
+      className={`bg-white rounded-xl shadow border border-gray-200 p-6 ${className}`}
     >
       <h2 className='text-xl font-bold text-gray-900 mb-6'>Recent Activity</h2>
 

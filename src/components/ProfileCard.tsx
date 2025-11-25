@@ -18,7 +18,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ user, className = '' }) => {
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-lg border border-gray-200 p-6 ${className}`}
+      className={`bg-white rounded-xl shadow border border-gray-200 p-6 ${className}`}
     >
       <div className='flex flex-col sm:flex-row items-start gap-6'>
         {/* Avatar */}
