@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 
 interface SearchBarProps {
   onSearch: (username: string) => void;
@@ -6,26 +6,26 @@ interface SearchBarProps {
   className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBar: React.FC<SearchBarProps> = memo(({
   onSearch,
   loading = false,
   className = '',
 }) => {
   const [username, setUsername] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim()) {
       onSearch(username.trim());
     }
-  };
+  }, [username, onSearch]);
 
   const sampleUsers = ['torvalds', 'gaearon', 'octocat', 'sindresorhus'];
 
-  const handleSampleUser = (user: string) => {
+  const handleSampleUser = useCallback((user: string) => {
     setUsername(user);
     onSearch(user);
-  };
+  }, [onSearch]);
 
   return (
     <div className={`w-full max-w-2xl mx-auto ${className}`}>
@@ -74,6 +74,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default SearchBar;

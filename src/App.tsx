@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useGitHubSearch } from './hooks/useGitHubSearch';
 import SearchBar from './components/SearchBar';
 import ProfileCard from './components/ProfileCard';
@@ -23,19 +23,19 @@ function App() {
 
   const [currentSort, setCurrentSort] = useState<SortOption>('updated');
 
-  const handleSearch = async (username: string) => {
+  const handleSearch = useCallback(async (username: string) => {
     await searchUser(username);
     setCurrentSort('updated');
-  };
+  }, [searchUser]);
 
-  const handleSortChange = async (sort: SortOption) => {
+  const handleSortChange = useCallback(async (sort: SortOption) => {
     setCurrentSort(sort);
     await loadRepositories(1, sort);
-  };
+  }, [loadRepositories]);
 
-  const handlePageChange = async (page: number) => {
+  const handlePageChange = useCallback(async (page: number) => {
     await loadRepositories(page, currentSort);
-  };
+  }, [loadRepositories, currentSort]);
 
   return (
     <div className='min-h-screen bg-gray-50'>
