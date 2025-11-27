@@ -61,9 +61,14 @@ export const useGitHubSearch = (): UseGitHubSearchResult => {
   }, []);
 
   // Helper function to load repositories for a specific user
-  const loadReposForUser = async (username: string, page = 1, sort: SortOption = 'updated') => {
-    const sortParam = sort === 'stars' ? 'updated' : sort === 'name' ? 'full_name' : 'updated';
-    
+  const loadReposForUser = async (
+    username: string,
+    page = 1,
+    sort: SortOption = 'updated'
+  ) => {
+    const sortParam =
+      sort === 'stars' ? 'updated' : sort === 'name' ? 'full_name' : 'updated';
+
     const { repositories: repos, totalCount } = await fetchUserRepositories(
       username,
       page,
@@ -86,7 +91,7 @@ export const useGitHubSearch = (): UseGitHubSearchResult => {
         totalPages: Math.ceil(totalCount / REPOS_PER_PAGE),
         perPage: REPOS_PER_PAGE,
         totalCount,
-      }
+      },
     };
   };
 
@@ -95,61 +100,67 @@ export const useGitHubSearch = (): UseGitHubSearchResult => {
     return await fetchUserActivities(username);
   };
 
-  const searchUser = useCallback(async (username: string) => {
-    if (!username.trim()) {
-      setError({ message: 'Please enter a valid username' });
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    reset();
-
-    try {
-      const userData = await fetchUser(username);
-      setUser(userData);
-
-      // Load repos and activities in parallel with the fetched user data
-      const [reposResult, activitiesResult] = await Promise.allSettled([
-        loadReposForUser(userData.login, 1, 'updated'),
-        loadActivitiesForUser(userData.login)
-      ]);
-
-      if (reposResult.status === 'fulfilled') {
-        setRepositories(reposResult.value.repositories);
-        setPagination(reposResult.value.pagination);
+  const searchUser = useCallback(
+    async (username: string) => {
+      if (!username.trim()) {
+        setError({ message: 'Please enter a valid username' });
+        return;
       }
 
-      if (activitiesResult.status === 'fulfilled') {
-        setActivities(activitiesResult.value);
+      setLoading(true);
+      setError(null);
+      reset();
+
+      try {
+        const userData = await fetchUser(username);
+        setUser(userData);
+
+        // Load repos and activities in parallel with the fetched user data
+        const [reposResult, activitiesResult] = await Promise.allSettled([
+          loadReposForUser(userData.login, 1, 'updated'),
+          loadActivitiesForUser(userData.login),
+        ]);
+
+        if (reposResult.status === 'fulfilled') {
+          setRepositories(reposResult.value.repositories);
+          setPagination(reposResult.value.pagination);
+        }
+
+        if (activitiesResult.status === 'fulfilled') {
+          setActivities(activitiesResult.value);
+        }
+      } catch (err) {
+        setError(err as ApiError);
+        setUser(null);
+        setRepositories([]);
+        setActivities([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(err as ApiError);
-      setUser(null);
-      setRepositories([]);
-      setActivities([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [reset]);
+    },
+    [reset]
+  );
 
-  const loadRepositories = useCallback(async (page = 1, sort: SortOption = 'updated') => {
-    if (!user) return;
+  const loadRepositories = useCallback(
+    async (page = 1, sort: SortOption = 'updated') => {
+      if (!user) return;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const result = await loadReposForUser(user.login, page, sort);
-      setRepositories(result.repositories);
-      setPagination(result.pagination);
-    } catch (err) {
-      setError(err as ApiError);
-      setRepositories([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+      try {
+        const result = await loadReposForUser(user.login, page, sort);
+        setRepositories(result.repositories);
+        setPagination(result.pagination);
+      } catch (err) {
+        setError(err as ApiError);
+        setRepositories([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user]
+  );
 
   const loadActivities = useCallback(async () => {
     if (!user) return;
